@@ -38,9 +38,34 @@ HelpDesk System - информационная система управлени
 - назначение исполнителей;
 - просмотр статистики.
 
-### Технологический стек
+#### Технологический стек
+- Backend
 - Python 3.12
 - Django
 - Django REST Framework
 - PostgreSQL
-- Git/GitHub
+
+#### Структура веток
+
+##### Основные ветки
+- main - стабильная версия проекта;
+- develop - основная ветка разработки.
+- feature-ветки (каждая новая функциональность реализуется в отдельной ветке):
+  - feature/project-setup 
+  - feature/users-app 
+  - feature/tickets-app 
+  - feature/comments-app 
+  - feature/authentication 
+  - feature/admin-panel
+
+### Текущий этап разработки:
+##### feature/project-setup
+
+В рамках данной ветки выполняется:
+
+- настройка виртуального окружения;
+- настройка Git и GitHub;
+- создание Django-проекта;
+- настройка переменных окружения;
+- подготовка структуры проекта;
+- подготовка к подключению PostgreSQL.

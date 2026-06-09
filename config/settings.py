@@ -25,6 +25,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # сторонние
+    "rest_framework",
+
+    # наши приложения
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -101,3 +107,7 @@ STATIC_URL = 'static/'
 
 # Это настройка Django, которая определяет тип поля первичного ключа (id)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Кастомная модель пользователя
+AUTH_USER_MODEL = "users.User"

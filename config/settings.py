@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     # наши приложения
     "users",
     "tickets",
+    "comments",
 ]
 
 MIDDLEWARE = [

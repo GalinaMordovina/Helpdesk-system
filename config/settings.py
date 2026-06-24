@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     # сторонние
     "rest_framework",
     "drf_spectacular",
+    "django_filters",
 
     # наши приложения
     "users",
@@ -129,6 +130,13 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+
+    "DEFAULT_FILTER_BACKENDS": [                          # фильтр, поиск
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ],
+
 }
 
 

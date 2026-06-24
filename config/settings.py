@@ -29,6 +29,7 @@ INSTALLED_APPS = [
 
     # сторонние
     "rest_framework",
+    "drf_spectacular",
 
     # наши приложения
     "users",
@@ -127,7 +128,47 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+
+# Настройки drf-spectacular
+SPECTACULAR_SETTINGS = {
+    # Название API
+    "TITLE": "HelpDesk System API",
+
+    # Описание API
+    "DESCRIPTION": (
+        "Автодокументация API информационной системы управления "
+        "заявками технической поддержки. "
+        "Основные разделы: users, tickets, comments, auth."
+    ),
+
+    # Версия API
+    "VERSION": "1.0.0",
+
+    # Не показывать отдельный endpoint схемы в Swagger
+    "SERVE_INCLUDE_SCHEMA": False,
+
+    # Кнопка Authorize для JWT
+    "SECURITY_SCHEMES": {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    },
+
+    "SECURITY": [{"BearerAuth": []}],
+
+    # Настройки Swagger UI
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "filter": True,
+    },
+}
+
 
 # Увеличим lifetime для проверки
 SIMPLE_JWT = {

@@ -51,30 +51,52 @@ HelpDesk System - информационная система управлени
 - main - стабильная версия проекта;
 - develop - основная ветка разработки.
 - feature-ветки (каждая новая функциональность реализуется в отдельной ветке):
-  - feature/project-setup 
-  - feature/users-app 
-  - feature/tickets-app 
-  - feature/comments-app 
-  - feature/authentication
-  - feature/api-setup
+  #### Backend
+  - feature/project-setup - настройка Django-проекта, PostgreSQL, переменных окружения и GitHub;
+  - feature/users-app - система пользователей и ролей;
+  - feature/tickets-app - заявки технической поддержки;
+  - feature/comments-app - комментарии к заявкам;
+  - feature/authentication - JWT-аутентификация и endpoint текущего пользователя;
+  - feature/api-setup - serializers, viewsets, routers и REST API;
   - feature/search-and-filters
   - feature/statistics
   - feature/email-notifications
+  - feature/api-documentation
   - feature/admin-panel
+  #### Web-интерфейс:
+
+  - feature/web-layout
+  - feature/web-auth
+  - feature/web-tickets
+  - feature/web-comments
+  - feature/web-dashboard
+
+  #### Финализация:
+
+  - feature/tests
+  - feature/docker-deployment
 
 ### Текущий этап разработки:
-##### feature/authentication
+##### feature/api-setup
 
-Реализована JWT-аутентификация пользователей.
+#### Цель
 
-Добавлено:
+Реализация REST API для основных сущностей системы технической поддержки.
 
-- настройка Django REST Framework;
-- подключение SimpleJWT;
-- получение access и refresh токенов;
-- обновление access токена;
-- endpoint `/api/users/me/` для получения данных текущего пользователя;
-- проверка защищённых API-запросов через Bearer Token.
+#### Выполненные задачи
 
-#### Результат: 
-Cистема поддерживает авторизацию пользователей через JWT.
+* подключена OpenAPI-документация через drf-spectacular;
+* настроены Swagger UI и ReDoc;
+* реализован сериализатор заявок (`TicketSerializer`);
+* реализован сериализатор комментариев (`CommentSerializer`);
+* реализован `TicketViewSet`;
+* реализован `CommentViewSet`;
+* настроены маршруты через DRF Router;
+* реализован CRUD API для заявок;
+* реализован CRUD API для комментариев;
+* протестирована работа API через Swagger и Postman;
+* настроена JWT-аутентификация для защищённых методов.
+
+#### Результат
+
+В проекте реализован базовый REST API для работы с заявками и комментариями. Настроена автоматическая генерация документации OpenAPI (Swagger/ReDoc). Детализация документации (описания методов, примеры запросов и ответов, описание полей моделей) будет выполнена на следующих этапах разработки.

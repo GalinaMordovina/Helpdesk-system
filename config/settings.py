@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "users",
     "tickets",
     "comments",
+    "statistics_app",
 ]
 
 MIDDLEWARE = [

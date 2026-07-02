@@ -7,6 +7,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from tickets.models import Ticket
 from tickets.serializers import TicketSerializer
 from tickets.filters import TicketFilter
+from notifications.services import send_ticket_created_email
 
 
 @extend_schema(
@@ -86,3 +87,8 @@ class TicketViewSet(ModelViewSet):
     ]
 
     ordering = ["-created_at"]
+
+    def perform_create(self, serializer):
+        ticket = serializer.save()
+        send_ticket_created_email(ticket)
+

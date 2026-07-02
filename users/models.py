@@ -4,15 +4,15 @@ from django.db import models
 
 class User(AbstractUser):
     ROLE_CHOICES = (
-        ("user", "Пользователь"),
+        ("employee", "Сотрудник"),
         ("support", "Специалист"),
-        ("admin", "Администратор"),
+        ("manager", "Менеджер"),
     )
 
     role = models.CharField(
         max_length=20,
         choices=ROLE_CHOICES,
-        default="user",
+        default="employee",
     )
 
     def __str__(self):

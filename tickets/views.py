@@ -92,8 +92,6 @@ class TicketViewSet(ModelViewSet):
         ticket = serializer.save()
         send_ticket_created_email(ticket)
 
-
     def perform_update(self, serializer):
         ticket = serializer.save()
         send_ticket_status_email(ticket)
-

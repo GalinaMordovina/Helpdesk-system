@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from tickets.models import Ticket
+from statistics_app.serializers import StatisticsSerializer
 
 
 @extend_schema(
@@ -16,6 +17,7 @@ from tickets.models import Ticket
         "число критических заявок, а также распределение заявок "
         "по статусам, приоритетам и категориям."
     ),
+    responses=StatisticsSerializer,
 )
 class StatisticsView(APIView):
     """Представление статистики по заявкам."""

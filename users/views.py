@@ -3,6 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from users.serializers import CurrentUserSerializer
+
 
 @extend_schema(exclude=True)
 class HealthCheckView(APIView):
@@ -16,6 +18,15 @@ class HealthCheckView(APIView):
         return Response({"status": "ok"})
 
 
+@extend_schema(
+    tags=["users"],
+    summary="Текущий пользователь",
+    description=(
+        "Возвращает информацию об авторизованном пользователе. "
+        "Для доступа необходимо передать действующий JWT access-токен."
+    ),
+    responses=CurrentUserSerializer,
+)
 class CurrentUserView(APIView):
     """Получение информации о текущем пользователе."""
 

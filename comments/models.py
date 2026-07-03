@@ -37,4 +37,4 @@ class Comment(models.Model):
         ordering = ["created_at"]
 
     def __str__(self):
-        return f"Комментарий к заявке #{self.ticket_id}"
+        return f"Комментарий #{self.id} к заявке #{self.ticket_id}"

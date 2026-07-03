@@ -15,5 +15,21 @@ __pycache__/
 # Database
 db.sqlite3
 
+media/
+
 # Logs
 *.log
+
+# Coverage
+.coverage
+htmlcov/
+.coverage.*
+
+# Pytest
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/

@@ -10,12 +10,16 @@ class CommentAdmin(admin.ModelAdmin):
         "ticket",
         "author",
         "created_at",
+        "updated_at",
     )
     list_filter = (
         "created_at",
+        "updated_at",
     )
     search_fields = (
         "text",
         "author__username",
+        "author__email",
         "ticket__title",
     )
+    ordering = ("-created_at",)

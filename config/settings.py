@@ -149,9 +149,9 @@ SPECTACULAR_SETTINGS = {
 
     # Описание API
     "DESCRIPTION": (
-        "Автодокументация API информационной системы управления "
-        "заявками технической поддержки. "
-        "Основные разделы: users, tickets, comments, auth."
+        "API информационной системы управления заявками технической поддержки. "
+        "Система включает управление пользователями, заявками, комментариями, "
+        "статистикой и email-уведомлениями."
     ),
 
     # Версия API
@@ -171,11 +171,19 @@ SPECTACULAR_SETTINGS = {
 
     "SECURITY": [{"BearerAuth": []}],
 
+    "TAGS": [
+        {"name": "auth", "description": "JWT-аутентификация"},
+        {"name": "users", "description": "Пользователи и текущий пользователь"},
+        {"name": "tickets", "description": "Заявки технической поддержки"},
+        {"name": "comments", "description": "Комментарии к заявкам"},
+        {"name": "statistics", "description": "Статистика по заявкам"},
+    ],
     # Настройки Swagger UI
     "SWAGGER_UI_SETTINGS": {
         "deepLinking": True,
         "persistAuthorization": True,
         "filter": True,
+        "displayOperationId": False,
     },
 }
 

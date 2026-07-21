@@ -55,7 +55,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,6 +111,11 @@ USE_TZ = True
 
 # Статические и медиа-файлы
 STATIC_URL = 'static/'
+
+# Дополнительная общая папка со статическими файлами
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Это настройка Django, которая определяет тип поля первичного ключа (id)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

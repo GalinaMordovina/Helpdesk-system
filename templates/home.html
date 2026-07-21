@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Главная — HelpDesk System
+{% endblock %}
+
+{% block content %}
+    <section class="mb-5">
+        <h1 class="mb-3">HelpDesk System</h1>
+
+        <p class="lead text-secondary">
+            Система управления заявками технической поддержки предприятия.
+        </p>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-xl-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 card-title">Создание заявок</h2>
+
+                    <p class="card-text text-secondary">
+                        Пользователи смогут создавать обращения и отслеживать
+                        ход их выполнения.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 card-title">Работа специалистов</h2>
+
+                    <p class="card-text text-secondary">
+                        Специалисты технической поддержки смогут принимать
+                        заявки и изменять их статусы.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 card-title">Контроль и статистика</h2>
+
+                    <p class="card-text text-secondary">
+                        Руководитель сможет контролировать обработку обращений
+                        и просматривать статистику.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

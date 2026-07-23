@@ -41,10 +41,25 @@
 
                 <!-- Верхняя панель -->
                 <header class="topbar px-4 py-3">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <a class="auth-link" href="#">
-                            Авторизация
-                        </a>
+                    <div class="d-flex justify-content-end align-items-center gap-3">
+                        {% if user.is_authenticated %}
+                            <span class="text-muted">
+                                {{ user.username }}
+                            </span>
+
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+
+                                <button class="btn btn-outline-secondary btn-sm" type="submit">
+                                    Выйти
+                                </button>
+                            </form>
+                        {% else %}
+                            <a class="auth-link" href="{% url 'login' %}">
+                                Авторизация
+                            </a>
+                        {% endif %}
+
                     </div>
                 </header>
 

@@ -210,3 +210,9 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=2),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+# URL для перенаправления после успешного входа
+LOGIN_REDIRECT_URL = "home"
+
+# URL для перенаправления после выхода
+LOGOUT_REDIRECT_URL = "home"

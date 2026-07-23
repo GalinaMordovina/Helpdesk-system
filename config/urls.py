@@ -12,6 +12,8 @@ from drf_spectacular.views import (
 urlpatterns = [
     path("", home, name="home"),
 
+    path("accounts/", include("django.contrib.auth.urls")),
+
     path('admin/', admin.site.urls),
 
     path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),

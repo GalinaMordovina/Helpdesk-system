@@ -17,7 +17,8 @@ from tickets.models import Ticket
 from tickets.serializers import TicketSerializer
 from tickets.filters import TicketFilter
 from notifications.services import send_ticket_created_email, send_ticket_status_email
-from tickets.forms import TicketForm
+from tickets.forms import TicketForm, TicketUpdateForm
+from comments.forms import CommentForm
 
 
 @extend_schema(
@@ -171,14 +172,25 @@ class TicketDetailView(LoginRequiredMixin, DetailView):
     template_name = "tickets/ticket_detail.html"
     context_object_name = "ticket"
 
+    def get_context_data(self, **kwargs):
+        """
+        Добавляет форму комментария в контекст страницы.
+        """
+        context = super().get_context_data(**kwargs)
+        context["comment_form"] = CommentForm()
+
+        return context
+
     def get_queryset(self):
         """
-        Возвращает заявки для авторизованного пользователя.
+        Возвращает заявки вместе с данными автора
+        и назначенного исполнителя.
         """
-
         return Ticket.objects.select_related(
             "author",
             "assigned_to",
+        ).prefetch_related(    # не меняет логику, но позволяет загрузить комментарии и авторов эффективнее
+            "comments__author",
         )
 
 
@@ -222,14 +234,21 @@ class TicketUpdateView(LoginRequiredMixin, UpdateView):
     """
 
     model = Ticket
-    form_class = TicketForm
     template_name = "tickets/ticket_form.html"
+
+    def get_form_class(self):
+        """
+        Выбирает форму редактирования с учётом роли пользователя.
+        """
+        if self.request.user.role in ["support", "manager"]:
+            return TicketUpdateForm
+
+        return TicketForm
 
     def get_success_url(self):
         """
         После сохранения открывает карточку заявки.
         """
-
         return reverse_lazy(
             "ticket_detail",
             kwargs={"pk": self.object.pk},

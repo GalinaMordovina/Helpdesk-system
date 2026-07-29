@@ -42,3 +42,55 @@ class TicketForm(forms.ModelForm):
                 }
             ),
         }
+
+
+class TicketUpdateForm(forms.ModelForm):
+    """
+    Форма редактирования заявки.
+    Позволяет изменять статус и назначать исполнителя.
+    """
+
+    class Meta:
+        model = Ticket
+        fields = [
+            "title",
+            "description",
+            "category",
+            "priority",
+            "status",
+            "assigned_to",
+        ]
+
+        widgets = {
+            "title": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                }
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 5,
+                }
+            ),
+            "category": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+            "priority": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+            "status": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+            "assigned_to": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+        }

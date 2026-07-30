@@ -1,11 +1,15 @@
-from django.db.models import Count
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+)
 
-from tickets.models import Ticket
 from statistics_app.serializers import StatisticsSerializer
+from statistics_app.services import get_ticket_statistics
 
 
 @extend_schema(
@@ -25,54 +29,38 @@ class StatisticsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        _ = request
+        """Возвращает статистику по заявкам."""
 
-        total_tickets = Ticket.objects.count()
+        statistics = get_ticket_statistics()
 
-        open_tickets = Ticket.objects.exclude(
-            status__in=[
-                Ticket.Status.RESOLVED,
-                Ticket.Status.CLOSED,
-            ]
-        ).count()
+        return Response(statistics)
 
-        closed_tickets = Ticket.objects.filter(
-            status__in=[
-                Ticket.Status.RESOLVED,
-                Ticket.Status.CLOSED,
-            ]
-        ).count()
 
-        critical_tickets = Ticket.objects.filter(
-            priority=Ticket.Priority.CRITICAL
-        ).count()
+class StatisticsWebView(LoginRequiredMixin, UserPassesTestMixin, TemplateView,):
+    """
+    Представление статистики в веб-интерфейсе.
+    Страница доступна специалистам поддержки
+    и руководителям.
+    """
 
-        by_status = dict(
-            Ticket.objects.values("status")
-            .annotate(count=Count("id"))
-            .values_list("status", "count")
-        )
+    template_name = "statistics_app/statistics.html"
 
-        by_priority = dict(
-            Ticket.objects.values("priority")
-            .annotate(count=Count("id"))
-            .values_list("priority", "count")
-        )
+    def test_func(self):
+        """
+        Проверяет право пользователя на просмотр статистики.
+        """
 
-        by_category = dict(
-            Ticket.objects.values("category")
-            .annotate(count=Count("id"))
-            .values_list("category", "count")
-        )
+        return self.request.user.role in [
+            "support",
+            "manager",
+        ]
 
-        return Response(
-            {
-                "total_tickets": total_tickets,
-                "open_tickets": open_tickets,
-                "closed_tickets": closed_tickets,
-                "critical_tickets": critical_tickets,
-                "by_status": by_status,
-                "by_priority": by_priority,
-                "by_category": by_category,
-            }
-        )
+    def get_context_data(self, **kwargs):
+        """
+        Добавляет статистику по заявкам в контекст шаблона.
+        """
+
+        context = super().get_context_data(**kwargs)
+        context.update(get_ticket_statistics())
+
+        return context

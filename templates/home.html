@@ -5,19 +5,27 @@
 {% endblock %}
 
 {% block content %}
-    <section class="mb-5">
-        <h1 class="mb-3">HelpDesk System</h1>
+<section class="mb-5">
+    <h1 class="mb-3">HelpDesk System</h1>
 
-        <p class="lead text-secondary">
-            Система управления заявками технической поддержки предприятия.
-        </p>
-    </section>
+    <p class="lead text-secondary">
+        Система управления заявками технической поддержки предприятия.
+    </p>
+</section>
 
-    <div class="row g-4">
-        <div class="col-md-6 col-xl-4">
+<div class="row g-4">
+
+    <!-- Создание заявки -->
+    <div class="col-md-6 col-xl-4">
+        <a
+            href="{% url 'ticket_create' %}"
+            class="text-decoration-none text-reset"
+        >
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
-                    <h2 class="h5 card-title">Создание заявок</h2>
+                    <h2 class="h5 card-title">
+                        Создание заявок
+                    </h2>
 
                     <p class="card-text text-secondary">
                         Пользователи смогут создавать обращения и отслеживать
@@ -25,12 +33,28 @@
                     </p>
                 </div>
             </div>
-        </div>
+        </a>
+    </div>
 
-        <div class="col-md-6 col-xl-4">
+    <!-- Работа специалистов -->
+    <div class="col-md-6 col-xl-4">
+        {% if user.role == "manager" %}
+            <a
+                href="{% url 'employee_list' %}"
+                class="text-decoration-none text-reset"
+            >
+        {% else %}
+            <a
+                href="{% url 'ticket_list' %}"
+                class="text-decoration-none text-reset"
+            >
+        {% endif %}
+
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
-                    <h2 class="h5 card-title">Работа специалистов</h2>
+                    <h2 class="h5 card-title">
+                        Работа специалистов
+                    </h2>
 
                     <p class="card-text text-secondary">
                         Специалисты технической поддержки смогут принимать
@@ -38,19 +62,31 @@
                     </p>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-6 col-xl-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h2 class="h5 card-title">Контроль и статистика</h2>
-
-                    <p class="card-text text-secondary">
-                        Руководитель сможет контролировать обработку обращений
-                        и просматривать статистику.
-                    </p>
-                </div>
-            </div>
-        </div>
+        </a>
     </div>
+
+    <!-- Контроль и статистика -->
+    {% if user.is_authenticated and user.role != "employee" %}
+        <div class="col-md-6 col-xl-4">
+            <a
+                href="{% url 'statistics_web' %}"
+                class="text-decoration-none text-reset"
+            >
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h2 class="h5 card-title">
+                            Контроль и статистика
+                        </h2>
+
+                        <p class="card-text text-secondary">
+                            Руководитель сможет контролировать обработку
+                            обращений и просматривать статистику.
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endif %}
+
+</div>
 {% endblock %}

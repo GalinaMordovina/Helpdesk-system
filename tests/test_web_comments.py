@@ -252,15 +252,19 @@ def manager(db):
 
 
 @pytest.mark.django_db
-def test_employee_does_not_see_status_field(
+def test_employee_sees_limited_status_choices(
     client,
     employee,
     ticket,
 ):
     """
-    Обычный пользователь не видит поле статуса
-    в форме редактирования заявки.
+    Обычный сотрудник видит поле статуса
+    в собственной заявке, но ему доступны только
+    текущий статус и статус «Ожидает уточнения».
     """
+    ticket.author = employee
+    ticket.save(update_fields=["author"])
+
     client.force_login(employee)
 
     response = client.get(
@@ -271,8 +275,14 @@ def test_employee_does_not_see_status_field(
     )
 
     assert response.status_code == 200
-    assert "status" not in response.context["form"].fields
-    assert 'name="status"' not in response.content.decode()
+
+    form = response.context["form"]
+
+    assert "status" in form.fields
+    assert list(form.fields["status"].choices) == [
+        (Ticket.Status.NEW, "Новая"),
+        (Ticket.Status.WAITING, "Ожидает уточнения"),
+    ]
 
 
 @pytest.mark.django_db
@@ -324,15 +334,18 @@ def test_manager_sees_status_field(
 
 
 @pytest.mark.django_db
-def test_employee_cannot_change_ticket_status(
+def test_employee_cannot_set_closed_status(
     client,
     employee,
     ticket,
 ):
     """
-    Обычный пользователь не может изменить статус заявки,
-    даже если вручную передаст его в POST-запросе.
+    Обычный сотрудник не может перевести
+    собственную заявку в статус «Закрыта».
     """
+    ticket.author = employee
+    ticket.save(update_fields=["author"])
+
     client.force_login(employee)
 
     original_status = ticket.status
@@ -351,11 +364,12 @@ def test_employee_cannot_change_ticket_status(
         },
     )
 
-    assert response.status_code == 302
+    assert response.status_code == 200
 
     ticket.refresh_from_db()
 
     assert ticket.status == original_status
+    assert "status" in response.context["form"].errors
 
 
 @pytest.mark.django_db

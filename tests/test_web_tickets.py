@@ -136,17 +136,22 @@ def test_ticket_update(
     ticket,
 ):
     """
-    Авторизованный пользователь может изменить заявку.
+    Авторизованный сотрудник может изменить данные заявки,
+    сохранив её текущий статус.
     """
     data = {
         "title": "Принтер работает с ошибками",
         "description": "Принтер печатает документы с полосами",
         "category": ticket.category,
         "priority": Ticket.Priority.HIGH,
+        "status": ticket.status,
     }
 
     response = authenticated_client.post(
-        reverse("ticket_update", kwargs={"pk": ticket.pk}),
+        reverse(
+            "ticket_update",
+            kwargs={"pk": ticket.pk},
+        ),
         data=data,
     )
 
@@ -156,7 +161,6 @@ def test_ticket_update(
     assert ticket.title == "Принтер работает с ошибками"
     assert ticket.description == "Принтер печатает документы с полосами"
     assert ticket.priority == Ticket.Priority.HIGH
-    assert ticket.status == Ticket.Status.NEW
 
 
 @pytest.mark.django_db
@@ -276,3 +280,38 @@ def test_ticket_list_pagination(
 
     assert second_page_response.status_code == 200
     assert len(second_page_response.context["tickets"]) == 1
+
+
+@pytest.mark.django_db
+def test_employee_can_set_waiting_status(
+    client,
+    employee_user,
+    ticket,
+):
+    """
+    Обычный сотрудник может перевести
+    собственную заявку в статус «Ожидает уточнения».
+    """
+    ticket.author = employee_user
+    ticket.save(update_fields=["author"])
+
+    client.force_login(employee_user)
+
+    response = client.post(
+        reverse(
+            "ticket_update",
+            kwargs={"pk": ticket.pk},
+        ),
+        data={
+            "title": ticket.title,
+            "description": ticket.description,
+            "category": ticket.category,
+            "priority": ticket.priority,
+            "status": Ticket.Status.WAITING,
+        },
+    )
+
+    ticket.refresh_from_db()
+
+    assert response.status_code == 302
+    assert ticket.status == Ticket.Status.WAITING

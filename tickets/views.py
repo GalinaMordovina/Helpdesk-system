@@ -17,7 +17,7 @@ from tickets.models import Ticket
 from tickets.serializers import TicketSerializer
 from tickets.filters import TicketFilter
 from notifications.services import send_ticket_created_email, send_ticket_status_email
-from tickets.forms import TicketForm, TicketUpdateForm
+from tickets.forms import TicketForm, TicketUpdateForm, EmployeeTicketUpdateForm
 from comments.forms import CommentForm
 
 
@@ -110,7 +110,35 @@ class TicketViewSet(ModelViewSet):
         send_ticket_status_email(ticket)
 
 
-class TicketListView(LoginRequiredMixin, ListView):
+class TicketAccessMixin:
+    """
+    Ограничивает доступ к заявкам в зависимости от роли пользователя.
+
+    Обычный сотрудник видит заявки, которые он создал,
+    а также заявки, назначенные ему.
+
+    Специалист и менеджер видят все заявки.
+    """
+
+    def get_queryset(self):
+        """
+        Возвращает доступные текущему пользователю заявки.
+        """
+        queryset = Ticket.objects.select_related(
+            "author",
+            "assigned_to",
+        )
+
+        if self.request.user.role == "employee":
+            queryset = queryset.filter(
+                Q(author=self.request.user)
+                | Q(assigned_to=self.request.user)
+            )
+
+        return queryset
+
+
+class TicketListView(LoginRequiredMixin, TicketAccessMixin, ListView):
     """
     Представление списка заявок в веб-интерфейсе.
     """
@@ -125,10 +153,7 @@ class TicketListView(LoginRequiredMixin, ListView):
         Возвращает список заявок с учётом поиска и фильтров.
         """
 
-        queryset = Ticket.objects.select_related(
-            "author",
-            "assigned_to",
-        ).order_by("-created_at")
+        queryset = super().get_queryset().order_by("-created_at")
 
         # Поиск по названию и описанию заявки
         search = self.request.GET.get("search")
@@ -163,7 +188,7 @@ class TicketListView(LoginRequiredMixin, ListView):
         return context
 
 
-class TicketDetailView(LoginRequiredMixin, DetailView):
+class TicketDetailView(LoginRequiredMixin, TicketAccessMixin, DetailView):
     """
     Представление одной заявки в веб-интерфейсе.
     """
@@ -183,13 +208,10 @@ class TicketDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         """
-        Возвращает заявки вместе с данными автора
-        и назначенного исполнителя.
+        Возвращает доступные пользователю заявки
+        вместе с комментариями и их авторами.
         """
-        return Ticket.objects.select_related(
-            "author",
-            "assigned_to",
-        ).prefetch_related(    # не меняет логику, но позволяет загрузить комментарии и авторов эффективнее
+        return super().get_queryset().prefetch_related(
             "comments__author",
         )
 
@@ -228,7 +250,7 @@ class TicketCreateView(LoginRequiredMixin, CreateView):
         )
 
 
-class TicketUpdateView(LoginRequiredMixin, UpdateView):
+class TicketUpdateView(LoginRequiredMixin, TicketAccessMixin, UpdateView):
     """
     Представление редактирования заявки.
     """
@@ -243,7 +265,21 @@ class TicketUpdateView(LoginRequiredMixin, UpdateView):
         if self.request.user.role in ["support", "manager"]:
             return TicketUpdateForm
 
-        return TicketForm
+        return EmployeeTicketUpdateForm
+
+    def form_valid(self, form):
+        """
+        Сохраняет изменения и отправляет уведомление,
+        если статус заявки был изменён.
+        """
+        old_status = self.get_object().status
+
+        response = super().form_valid(form)
+
+        if self.object.status != old_status:
+            send_ticket_status_email(self.object)
+
+        return response
 
     def get_success_url(self):
         """
@@ -255,7 +291,7 @@ class TicketUpdateView(LoginRequiredMixin, UpdateView):
         )
 
 
-class TicketDeleteView(LoginRequiredMixin, DeleteView):
+class TicketDeleteView(LoginRequiredMixin, TicketAccessMixin, DeleteView):
     """
     Представление удаления заявки.
     """

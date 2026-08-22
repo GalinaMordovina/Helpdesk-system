@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Статистика
+{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h1 class="h2 mb-2">
+        Статистика по заявкам
+    </h1>
+
+    <p class="text-muted mb-0">
+        Общая информация о работе системы технической поддержки.
+    </p>
+</div>
+
+<div class="row g-3 mb-4">
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <p class="text-muted mb-2">
+                    Всего заявок
+                </p>
+
+                <p class="display-6 fw-semibold mb-0">
+                    {{ total_tickets }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <p class="text-muted mb-2">
+                    Открытые заявки
+                </p>
+
+                <p class="display-6 fw-semibold mb-0">
+                    {{ open_tickets }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <p class="text-muted mb-2">
+                    Закрытые заявки
+                </p>
+
+                <p class="display-6 fw-semibold mb-0">
+                    {{ closed_tickets }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <p class="text-muted mb-2">
+                    Критические заявки
+                </p>
+
+                <p class="display-6 fw-semibold mb-0">
+                    {{ critical_tickets }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+
+                <h2 class="h5 mb-3">
+                    По статусам
+                </h2>
+
+                {% if by_status %}
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Статус</th>
+                                    <th class="text-end">Количество</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for status, count in by_status %}
+                                    <tr>
+                                        <td>{{ status }}</td>
+                                        <td class="text-end">{{ count }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">
+                        Данные отсутствуют.
+                    </p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+
+                <h2 class="h5 mb-3">
+                    По приоритетам
+                </h2>
+
+                {% if by_priority %}
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Приоритет</th>
+                                    <th class="text-end">Количество</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for priority, count in by_priority %}
+                                    <tr>
+                                        <td>{{ priority }}</td>
+                                        <td class="text-end">{{ count }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">
+                        Данные отсутствуют.
+                    </p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+
+                <h2 class="h5 mb-3">
+                    По категориям
+                </h2>
+
+                {% if by_category %}
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Категория</th>
+                                    <th class="text-end">Количество</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for category, count in by_category.items %}
+                                    <tr>
+                                        <td>{{ category }}</td>
+                                        <td class="text-end">{{ count }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">
+                        Данные отсутствуют.
+                    </p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

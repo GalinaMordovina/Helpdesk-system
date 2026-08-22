@@ -1,0 +1,65 @@
+<nav class="sidebar col-md-3 col-lg-2 bg-dark text-white p-4">
+    <h3 class="sidebar-title mb-4 fw-bold">
+        HelpDesk
+    </h3>
+
+    <ul class="nav flex-column">
+
+        <!-- Главная -->
+        <li class="nav-item">
+            <a
+                class="nav-link text-white
+                    {% if request.resolver_match.url_name == 'home' %}
+                        active
+                    {% endif %}"
+                href="{% url 'home' %}"
+            >
+                Главная
+            </a>
+        </li>
+
+        <!-- Заявки -->
+        <li class="nav-item">
+            <a
+                class="nav-link text-white
+                    {% if request.resolver_match.url_name == 'ticket_list' or request.resolver_match.url_name == 'ticket_detail' or request.resolver_match.url_name == 'ticket_create' or request.resolver_match.url_name == 'ticket_update' or request.resolver_match.url_name == 'ticket_delete' %}
+                        active
+                    {% endif %}"
+                href="{% url 'ticket_list' %}"
+            >
+                Заявки
+            </a>
+        </li>
+
+        <!-- Сотрудники: только для менеджера -->
+        {% if request.user.is_authenticated and request.user.role == "manager" %}
+            <li class="nav-item">
+                <a
+                    class="nav-link text-white
+                        {% if request.resolver_match.url_name == 'employee_list' %}
+                            active
+                        {% endif %}"
+                    href="{% url 'employee_list' %}"
+                >
+                    Сотрудники
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- Статистика: для специалиста и менеджера -->
+        {% if request.user.is_authenticated and request.user.role != "employee" %}
+            <li class="nav-item">
+                <a
+                    class="nav-link text-white
+                        {% if request.resolver_match.url_name == 'statistics_web' %}
+                            active
+                        {% endif %}"
+                    href="{% url 'statistics_web' %}"
+                >
+                    Статистика
+                </a>
+            </li>
+        {% endif %}
+
+    </ul>
+</nav>
